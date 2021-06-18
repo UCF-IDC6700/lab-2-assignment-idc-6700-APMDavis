@@ -64,25 +64,25 @@ ylab("Winnings") +
 ggtitle("PGA 2004 Stats") + 
 theme(text = element_text(size = 14, family = "Times")))
 
-#4. Modeling 6 variables as predictors of winnings
+#4. Modeling 3 variables as predictors of winnings
 #Linear regression
-fit1<-lm(formula = winnings ~ avedrv + drvacc + grnreg + aveputt + 
-     savepct + events, data = PGA)
+fit1<-lm(formula = winnings ~ avedrv + savepct + events, data = PGA)
 summary(fit1)
+
 #Polynomial regression
-fit2<-lm(formula = winnings ~ poly(avedrv, 6), data = PGA)
+fit2<-lm(formula = winnings ~ poly(avedrv + savepct + events), data = PGA)
 summary(fit2)
-#fit1 has higher adj R2 and 4 of 6 predictors explain significant variability in y (vs. 1 of 6 for fit2 poly model), so fit1 is better fit  
+#fit1, linear model, has higher adj R2 than fit2 (.091 to .025) and 2 of 3 predictors explain significant variability in y at .05+ level. fit1 is better.
 
 #5. Prediction
 PGA2 <- read.csv('http://eecs.ucf.edu/~wiegand/idc6700/datasets/pga2004b.csv', header = TRUE, sep = ",")
 #Predict with fit1, the linear model
 LinPred = predict(fit1, newdata=PGA2)
 print(LinPred)
+
 #Predict with fit2, the polynomial model
 PolyPred<-predict(fit2, newdata=PGA2, SE = true)
 print(PolyPred)
-print(PGA2$winnings)
-print(LinPred)
-print(PolyPred)
-#In this case, it seems fit2 the polynomial model is a better predictive model (for 2 of 3 golfers). P.S. I was pretty confused on the polynomial plotting, but what I did is based on what's at this link, but modeling for y (winnings) instead of x. http://www.science.smith.edu/~jcrouser/SDS293/labs/lab12-r.html 
+print(PGA2$winnings-LinPred)
+print(PGA2$winnings-PolyPred)
+#In this case, it seems fit2 the polynomial model is a better predictive model (for 2 of 3 golfers). P.S. I haven't done modeling in awhile so my interpretation skills need help.
